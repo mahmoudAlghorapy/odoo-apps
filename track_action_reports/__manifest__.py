@@ -6,7 +6,13 @@
     'version': '16.1',
     'depends': ['base', 'hr','purchase','sale', 'account'],
     'author': 'Mahmoud Fathy ',
-    'summary': "This module track the main print in odoo sale account purchase stock ",
+    'price': '40',
+
+
+    'currency': 'USD',
+    'website': 'https://www.linkedin.com/in/mahmoud-mohamed-096638110/',
+
+    'summary': "This module track the main prints of odoo sale, account, purchase, stock ",
     'description': """
 This module track the main print in odoo sale account purchase stock.
 ========================================
