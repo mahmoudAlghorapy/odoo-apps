@@ -3,7 +3,7 @@
 
 {
     'name': 'Track Action Reports',
-    'version': '16.1',
+    'version': '17.1',
     'depends': ['base', 'hr','purchase','sale', 'account'],
     'author': 'Mahmoud Fathy ',
     'summary': "This module track the main print in odoo sale account purchase stock ",
