@@ -4,11 +4,12 @@
 {
     'name': 'Track Action Reports',
     'version': '18.1',
-    'depends': ['base', 'hr','purchase','sale', 'account'],
+    'depends': ['base', 'hr', 'purchase', 'sale', 'account'],
     'author': 'Mahmoud Fathy ',
     'price': '40',
     'currency': 'USD',
     'summary': "This module track the main print in odoo sale account purchase stock ",
+    'website': 'https://www.linkedin.com/in/mahmoud-mohamed-096638110/',
     'description': """
 This module track the main print in odoo sale account purchase stock.
 ========================================
