@@ -5,7 +5,7 @@
     'name': 'Track Action Reports',
     'version': '18.1',
     'depends': ['base', 'hr','purchase','sale', 'account'],
-    'author': 'Mahmoud Fathy ',
+    'author': 'Mahmoud Fathy mahmah273@gmail.com ',
     'price': '40',
 
 
