@@ -1,5 +1,26 @@
 from odoo import api, models
+class report_saleorder_raw(models.AbstractModel):
+    _name = 'report.sale.report_saleorder_raw'
 
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        user = self.env.user
+        sale_orders = self.env['sale.order'].browse(docids)
+        print('sale_orders',sale_orders)
+
+        # Add a message to the sale order indicating the report print
+        for order in sale_orders:
+            order.message_post(
+                body=f"Report printed by {user.name}",
+                subject="Report Printed"
+            )
+        return {
+            'doc_ids': docids,
+            'doc_model': 'sale.order',
+            'docs': sale_orders,
+            'data': data,
+            'user': user,
+        }
 
 class ReportSaleOrder(models.AbstractModel):
     _name = 'report.sale.report_saleorder'
@@ -9,29 +30,19 @@ class ReportSaleOrder(models.AbstractModel):
         user = self.env.user
         sale_orders = self.env['sale.order'].browse(docids)
 
-        if self._validate_sale_orders(sale_orders):
-            # Add a message to the sale order indicating the report print
-            for order in sale_orders:
-                order.message_post(
-                    body=f"Report printed by {user.name}",
-                    subject="Report Printed"
-                )
-            return {
-                'doc_ids': docids,
-                'doc_model': 'sale.order',
-                'docs': sale_orders,
-                'data': data,
-                'user': user,
-            }
-        else:
-            return {}
-
-    def _validate_sale_orders(self, sale_orders):
+        # Add a message to the sale order indicating the report print
         for order in sale_orders:
-            if not order.partner_id:
-                return False
-        return True
-
+            order.message_post(
+                body=f"Report printed by {user.name}",
+                subject="Report Printed"
+            )
+        return {
+            'doc_ids': docids,
+            'doc_model': 'sale.order',
+            'docs': sale_orders,
+            'data': data,
+            'user': user,
+    }
 
 class ReportAccountMove(models.AbstractModel):
     _name = 'report.account.report_invoice_with_payments'
@@ -122,6 +133,7 @@ class ReportAccountPaymentDocument(models.AbstractModel):
             'data': data,
             'user': user,
         }
+
 class ReportStockPicking(models.AbstractModel):
     _name = 'report.stock.report_picking'
 
