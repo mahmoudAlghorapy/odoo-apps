@@ -21,6 +21,9 @@ This module track the main print in odoo sale account purchase stock.
         # 'views/employee.xml',
 
     ],
+    'images': [
+        'static/description/banner.gif',
+    ],
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
