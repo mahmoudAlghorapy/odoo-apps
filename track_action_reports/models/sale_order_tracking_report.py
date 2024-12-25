@@ -1,27 +1,49 @@
-from odoo import api, models
-class report_saleorder_raw(models.AbstractModel):
+from odoo import api, models, _
+import logging
+
+_logger = logging.getLogger(__name__)
+class ReportSaleOrderRaw(models.AbstractModel):
     _name = 'report.sale.report_saleorder_raw'
+    _description = 'Sale Order Report with Message Posting'
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        user = self.env.user
-        sale_orders = self.env['sale.order'].browse(docids)
-        print('sale_orders',sale_orders)
+        """
+        Prepares values for rendering the Sale Order report and posts a message
+        to the chatter of each sale order indicating the report was printed.
 
-        # Add a message to the sale order indicating the report print
-        for order in sale_orders:
-            order.message_post(
-                body=f"Report printed by {user.name}",
-                subject="Report Printed"
-            )
-        return {
-            'doc_ids': docids,
-            'doc_model': 'sale.order',
-            'docs': sale_orders,
-            'data': data,
-            'user': user,
-        }
+        :param docids: List of IDs of the sale orders being printed
+        :param data: Additional data (optional)
+        :return: A dictionary of values for the report template
+        """
+        try:
+            _logger.info("Preparing report for sale orders: %s", docids)
 
+            # Fetch the current user and the sale orders
+            user = self.env.user
+            sale_orders = self.env['sale.order'].browse(docids)
+
+            if not sale_orders:
+                _logger.warning("No sale orders found for docids: %s", docids)
+
+            # Post a message for each sale order
+            for order in sale_orders:
+                order.message_post(
+                    body=_("The report for this quotation/order was printed by %s.") % user.name,
+                    subject=_("Report Printed")
+                )
+
+            # Return data for the report template
+            return {
+                'doc_ids': docids,
+                'doc_model': 'sale.order',
+                'docs': sale_orders,
+                'data': data,
+            }
+
+        except Exception as e:
+            _logger.error("An error occurred while preparing the report: %s", str(e))
+            raise
 class ReportSaleOrder(models.AbstractModel):
     _name = 'report.sale.report_saleorder'
 
@@ -29,20 +51,31 @@ class ReportSaleOrder(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         user = self.env.user
         sale_orders = self.env['sale.order'].browse(docids)
+        print('sale_orders',sale_orders)
 
-        # Add a message to the sale order indicating the report print
+        if self._validate_sale_orders(sale_orders):
+            # Add a message to the sale order indicating the report print
+            for order in sale_orders:
+                order.message_post(
+                    body=f"Report printed by {user.name}",
+                    subject="Report Printed"
+                )
+            return {
+                'doc_ids': docids,
+                'doc_model': 'sale.order',
+                'docs': sale_orders,
+                'data': data,
+                'user': user,
+            }
+        else:
+            return {}
+
+    def _validate_sale_orders(self, sale_orders):
         for order in sale_orders:
-            order.message_post(
-                body=f"Report printed by {user.name}",
-                subject="Report Printed"
-            )
-        return {
-            'doc_ids': docids,
-            'doc_model': 'sale.order',
-            'docs': sale_orders,
-            'data': data,
-            'user': user,
-    }
+            if not order.partner_id:
+                return False
+        return True
+
 
 class ReportAccountMove(models.AbstractModel):
     _name = 'report.account.report_invoice_with_payments'
@@ -133,7 +166,6 @@ class ReportAccountPaymentDocument(models.AbstractModel):
             'data': data,
             'user': user,
         }
-
 class ReportStockPicking(models.AbstractModel):
     _name = 'report.stock.report_picking'
 

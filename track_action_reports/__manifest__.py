@@ -4,12 +4,15 @@
 {
     'name': 'Track Action Reports',
     'version': '18.1',
-    'depends': ['base', 'hr', 'purchase', 'sale', 'account'],
+    'depends': ['base', 'hr','purchase','sale', 'account'],
     'author': 'Mahmoud Fathy ',
     'price': '40',
+
+
     'currency': 'USD',
-    'summary': "This module track the main print in odoo sale account purchase stock ",
     'website': 'https://www.linkedin.com/in/mahmoud-mohamed-096638110/',
+
+    'summary': "This module track the main prints of odoo sale, account, purchase, stock ",
     'description': """
 This module track the main print in odoo sale account purchase stock.
 ========================================
@@ -21,9 +24,6 @@ This module track the main print in odoo sale account purchase stock.
         # 'security/calendar_security.xml',
         # 'views/employee.xml',
 
-    ],
-    'images': [
-        'static/description/banner.gif',
     ],
     'installable': True,
     'application': True,
