@@ -3,7 +3,7 @@
     "version": "17.0",
     "author": "Mahmoud Fathi mahmah273@gmail.com",
 
-    "license": "AGPL-3",
+    "license": "LGPL-3",
     "category": "account",
     'price': '40',
     "depends": [
