@@ -5,7 +5,7 @@
 
     "category": "account",
     'price': '40',
-'summary': "This module add many deduction in payment journal entry  ",
+    'summary': "This module add many deduction in payment journal entry  ",
     'description': """
 This module add many deduction in payment journal entry  when we press action confirm   after we make accounts configration in setting.
 
