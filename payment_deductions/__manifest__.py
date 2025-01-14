@@ -17,7 +17,8 @@
         # 'data/cron.xml',
 
     ],
-      'installable': True,
+    'images': ['static/description/banner.gif'],
+    'installable': True,
     'application': True,
     'license': 'LGPL-3',
 }
