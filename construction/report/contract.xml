@@ -1,0 +1,133 @@
+<odoo>
+    <record id="verte_commercial_invoice_report" model="ir.actions.report">
+        <field name="name">Contract Report</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+         <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="report_name">construction.verte_commercial_invoice_template</field>
+        <field name="report_file">construction.verte_commercial_invoice_template</field>
+        <field name="print_report_name">
+            ( 'Contract - %s' % (object.partner_id.name))
+        </field>
+        <!--        <field name="paperformat_id" ref="account_loan_enhancement.paperformat_lop_contract_template"/>-->
+    </record>
+    <template id="verte_commercial_invoice_template">
+         <t t-call="web.html_container">
+        <t t-call="web.external_layout">
+
+            <div class="page" >
+                <t t-foreach="docs" t-as="doc">
+
+                    <h2 style="text-align: center;">شاشة المقايسة أو التعاقد</h2>
+
+                    <table class="table table-sm o_main_table table-borderless mt-4" style="width: 40%; direction: rtl; font-size:14px;" align="right">
+                        <tr>
+                            <td>
+                                <strong>عقد رقم:</strong>
+                                <span t-esc="doc.name"/>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>اسم العميل:</strong>
+                                <span t-esc="doc.partner_id.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>تاريخ المشروع:</strong>
+                                من
+                                <span t-esc="doc.date_from"/>
+                                الى
+                                <span t-esc="doc.date_to"/>
+                            </td>
+
+                        </tr>
+                        <tr>
+                             <td>
+                                <strong>اسم المشروع:</strong>
+                                <span t-esc="doc.project_name"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br/>
+
+<!--                    <h3 style="text-align: center;">التعاقد</h3>-->
+
+                    <table class="table table-sm"
+                           style="width: 100%; border-collapse: collapse; direction: rtl; font-size: 13px;" border="1">
+                        <thead>
+                            <tr>
+                                <th>رقم البند</th>
+                                <th>اسم البند</th>
+                                <th>الوحدة</th>
+                                <th>الفئة</th>
+                                <th>كمية التعاقد</th>
+                                <th>قيمة التعاقد</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.order_line" t-as="line"
+                               t-esc-options="{'widget': 'float', 'precision_digits': 2}">
+                                <tr>
+                                    <td>
+                                        <t t-esc="line.sequence_number"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.product_uom"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.price_unit"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.product_uom_qty"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="line.price_subtotal"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <br/>
+
+                    <table style="width: 100%; direction: rtl; font-size: 14px;">
+                        <tr>
+                            <td>
+                                <strong>الاجمالي قبل الخصومات:</strong>
+                            </td>
+                            <td>
+                                <t t-esc="doc.total_amount_before_discount_amt"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>مسحوبات وخصومات مخازن:</strong>
+                            </td>
+                            <td>
+                                <t t-esc="doc.discount_amount"/>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>
+                                <strong>الاجمالي بعد الخصومات:</strong>
+                            </td>
+                            <td>
+                                <t t-esc="doc.amount_total"/>
+                            </td>
+                        </tr>
+                    </table>
+                </t>
+            </div>
+        </t>
+         </t>
+    </template>
+</odoo>

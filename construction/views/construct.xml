@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="invoice_construction_view_form" model="ir.ui.view">
+        <field name="name">invoice.construction.view.form</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <form string="Invoice">
+                <header>
+                    <button name="action_post" states="draft" string="Post" class="oe_highlight" type="object"/>
+                    <button name="button_draft" states="posted" string="Set to Draft" type="object"/>
+                    <field name="payment_state" invisible="1"/>
+                    <field name="move_type" invisible="1"/>
+                    <button name="action_register_payment" id="account_invoice_payment_btn" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|', '|', ('state', '!=', 'posted'), ('payment_state', 'not in', ('not_paid', 'partial')), ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"
+                            context="{'dont_redirect_to_payments': True}" string="Register Payment" data-hotkey="g"
+                            groups="account.group_account_invoice"/>
+
+                    <button name="button_cancel" states="posted,draft" string="Cancel" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                    <field name="supervision_invoice_id" invisible="1" />
+                    <field name="is_converted" invisible="1" />
+                    <button name="action_convert_to_supervision_invoice" string="Create Supervision Invoice"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|', '|','|', ('state','in',['draft','cancel']),('const_type','!=','to_sub_contractor'),('supervision_invoice_id','=',True),('is_converted','=',True)]}"
+                            type="object"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_supervision_invoice" string="Supervision Invoice" type="object" class="oe_stat_button"  attrs="{'invisible': [('supervision_invoice_id', '=',False)]}" icon="fa-pencil-square-o">
+<!--                        <field name="supervision_count" widget="statinfo" string="Invoices"/>-->
+                    </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <label for="sub_inv_sequence"
+                                   attrs="{'invisible': [('const_type', '=', 'to_owner')]}"/>
+                            <field name="sub_inv_sequence"
+                                   attrs="{'invisible': [('const_type', '=', 'to_owner')]}"/>
+                            <label for="owner_inv_sequence"
+                                   attrs="{'invisible': [('const_type', '!=', 'to_owner')]}"/>
+                            <field name="owner_inv_sequence"
+                                   attrs="{'invisible': [('const_type', '!=', 'to_owner')]}"/>
+                            <!--                            <field name="name"/>-->
+                        </h1>
+                    </div>
+                    <group>
+                        <label for="date_from"/>
+                        <div>
+                            <field name="date_from" placeholder="من" class="oe_inline"
+                                   attrs="{'readonly':[('state','!=','draft')]}"/>
+                            -
+                            <field name="date_to" placeholder="الي" class="oe_inline"
+                                   attrs="{'readonly':[('state','!=','draft')]}"
+                                   nolabel="1"/>
+                        </div>
+                        <field name="project_name" />
+                        <field name="is_supervision"  invisible="1"/>
+
+                    </group>
+                    <group>
+                        <group>
+                            <field name="partner_id" context="{'default_customer_rank': 1}"
+                                   attrs="{'invisible': [('const_type', '!=', 'to_owner')]}"/>
+                            <field name="partner_id" context="{'default_supplier_rank': 1}"
+                                   attrs="{'invisible': [('const_type', '!=', 'to_sub_contractor')]}"/>
+                            <field name="const_type" readonly="1" invisible="1"/>
+                            <field name="company_id" readonly="1" invisible="1"/>
+                            <field name="suitable_journal_ids" readonly="1" widget="many2many_tags" invisible="1"/>
+                            <field name="sale_order_id" invisible="1"/>
+                            <field name="invoice_payment_term_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date" />
+                            <field name="journal_id"/>
+                        </group>
+                    </group>
+
+                    <field name="invoice_line_ids">
+                        <tree editable="bottom">
+                            <field name="sequence_number" />
+                            <field name="company_id" invisible="1"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="product_id" />
+
+                            <field name="account_id"
+                                   attrs="{'column_invisible': [('parent.const_type', '!=', 'to_sub_contractor')]}"/>
+
+                            <field name="product_uom_id"  groups="product.group_uom"/>
+                            <field name="account_analytic_id"/>
+                            <field name="price_unit"/>
+                            <field name="contract_amount"
+                                   attrs="{'column_invisible': [('parent.const_type', '=', 'to_sub_contractor')]}"/>
+                            <field name="contract_qty"
+                                   attrs="{'column_invisible': [('parent.const_type', '=', 'to_sub_contractor')]}"/>
+                            <field name="last_product_percent"
+                                   attrs="{'column_invisible': [('parent.const_type', '!=', 'to_sub_contractor')]}"/>
+                            <field name="product_percent"
+                                   attrs="{'column_invisible': [('parent.const_type', '!=', 'to_sub_contractor')]}"/>
+                            <field name="total_product_percent"
+                                   attrs="{'column_invisible': [('parent.const_type', '!=', 'to_sub_contractor')]}"/>
+                            <field name="last_qty" />
+                            <field name="quantity" />
+                            <field name="total_qty" />
+                            <field name="product_percent"
+                                   attrs="{'column_invisible': [('parent.const_type', '=', 'to_sub_contractor')]}"/>
+                            <field name="supervision_amount"
+                                   attrs="{'column_invisible': ['|',('parent.const_type', '=', 'to_sub_contractor'),('parent.is_supervision', '=', False)]}"/>
+
+                            <field name="last_price"
+                                   attrs="{'column_invisible': [('parent.const_type', '=', 'to_sub_contractor')]}"/>
+                            <field name="last_price"
+                                   attrs="{'column_invisible': [('parent.const_type', '!=', 'to_sub_contractor')]}"/>
+                            <field name="current_price"
+                                   attrs="{'column_invisible': [('parent.const_type', '!=', 'to_sub_contractor')]}"/>
+                            <field name="current_price"
+                                   attrs="{'column_invisible': [('parent.const_type', '=', 'to_sub_contractor')]}"/>
+                            <field name="total_price"/>
+                        </tree>
+
+                    </field>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+
+
+                         <field name="total_supervision_amount" widget="monetary"
+                               options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible': ['|',('const_type', '!=', 'to_owner'),('is_supervision', '=', False)]}"
+                               colspan="2"/>
+                        <field name="amount_total_works" widget="monetary"
+                               options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible': [('const_type', '!=', 'to_sub_contractor')]}"
+                               colspan="2"/>
+
+                        <field name="amount_total_works" widget="monetary"
+                               options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible': [('const_type', '=', 'to_sub_contractor')]}"
+                               colspan="2"/>
+                        <field name="insurance_percentage" widget="percentage" options="{'default': 0.0}"
+                               attrs="{'invisible': [('const_type', '!=', 'to_sub_contractor')]}"
+                               colspan="2"/>
+                        <field name="insurance_works" widget="monetary"
+                               attrs="{'invisible': [('const_type', '!=', 'to_sub_contractor')]}"
+                               colspan="2"/>
+
+                        <!--                        <field name="amount_total" widget="monetary"-->
+                        <!--                               options="{'currency_field': 'currency_id'}"-->
+                        <!--                               attrs="{'invisible': [('const_type','=','normal')]}"-->
+                        <!--                               colspan="2"/>-->
+                    </group>
+                    <div class="oe_title" attrs="{'invisible': [('const_type', '=', 'to_sub_contractor')]}">
+                        <h2>Deduction Item </h2>
+                    </div>
+                    <field name="deduction_line_ids" attrs="{'invisible': [('const_type', '=', 'to_sub_contractor')]}">
+                        <tree editable="bottom">
+                            <field name="product_id" />
+                            <field name="company_id" invisible="1"/>
+                            <field name="account_id"/>
+                            <field name="discount_percent" />
+                            <field name="discount_amount"/>
+                        </tree>
+                    </field>
+
+                    <!-- Total Deductions -->
+                    <group class="oe_subtotal_footer oe_right" colspan="2" attrs="{'invisible': [('const_type', '=', 'to_sub_contractor')]}">
+                        <field name="total_deductions" widget="monetary"
+
+                               options="{'currency_field': 'currency_id'}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Invoice Tree View -->
+    <record id="invoice_construction_view_tree" model="ir.ui.view">
+        <field name="name">invoice.construction.tree</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="move_type" invisible="1"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="invoice_date"/>
+                <field name="amount_total_signed"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="sale_const_view_order_tree__" model="ir.ui.view">
+        <field name="name">sale.construction.tree</field>
+        <field name="model">sale.order</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="project_name"/>
+                <!--                <field name="amount_total_signed"/>-->
+                <field name="amount_total"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Sale Order Form View -->
+    <record id="sale_const_view_order_form1__" model="ir.ui.view">
+        <field name="name">sale.construction.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Contract Screen">
+                <header>
+                    <field name="invoice_status" invisible="1"/>
+                    <field name="invoice_count" invisible="1"/>
+                    <field name="authorized_transaction_ids" invisible="1"/>
+                    <button name="payment_action_capture" type="object" data-hotkey="shift+g"
+                            string="Capture Transaction" class="oe_highlight"
+                            attrs="{'invisible': [('authorized_transaction_ids', '=', [])]}"/>
+                    <button name="payment_action_void" type="object" string="Void Transaction" data-hotkey="shift+v"
+                            confirm="Are you sure you want to void the authorized transaction? This action can't be undone."
+                            attrs="{'invisible': [('authorized_transaction_ids', '=', [])]}"/>
+                    <button id="create_invoice" name="337" string="Create Invoice" type="action" class="btn-primary"
+                            data-hotkey="q" attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
+                    <button id="create_invoice_percentage" name="337" string="Create Invoice" type="action"
+                            context="{'default_advance_payment_method': 'percentage'}" data-hotkey="q"
+                            attrs="{'invisible': ['|',('invoice_status', '!=', 'no'), ('state', '!=', 'sale')]}"/>
+                    <button name="action_quotation_send" string="Send by Email" type="object" states="draft"
+                            class="btn-primary" data-hotkey="g" context="{'validate_analytic': True}"/>
+                    <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice"
+                            groups="sale.group_proforma_sales" class="btn-primary"
+                            attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_count','&gt;=',1)]}"
+                            context="{'proforma': True, 'validate_analytic': True}"/>
+                    <button name="action_confirm" id="action_confirm" data-hotkey="v" string="Confirm"
+                            class="btn-primary" type="object" context="{'validate_analytic': True}"
+                            attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+                    <button name="action_confirm" data-hotkey="v" string="Confirm" type="object"
+                            context="{'validate_analytic': True}"
+                            attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice"
+                            groups="sale.group_proforma_sales"
+                            attrs="{'invisible': ['|', ('state', '=', 'draft'), ('invoice_count','&gt;=',1)]}"
+                            context="{'proforma': True, 'validate_analytic': True}"/>
+                    <button name="action_quotation_send" string="Send by Email" type="object" states="sent,sale"
+                            data-hotkey="g" context="{'validate_analytic': True}"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale']), ('id', '=', False)]}"
+                            data-hotkey="z"/>
+                    <button name="action_draft" states="cancel" type="object" string="Set to Quotation"
+                            data-hotkey="w"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,sale"/>
+                </header>
+                <div class="alert alert-warning mb-0" role="alert"
+                     attrs="{'invisible': [('partner_credit_warning', '=', '')]}">
+                    <field name="partner_credit_warning"/>
+                </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+                        <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                    </button>
+                    <button name="action_preview_sale_order" type="object" class="oe_stat_button" icon="fa-globe icon">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Customer</span>
+                            <span class="o_stat_text">Preview</span>
+                        </div>
+                    </button>
+                        <button name="action_view_sub_inv" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o">
+                            <field name="sub_count" widget="statinfo" string="Sun Contract"/>
+                        </button>
+                        <button name="action_view_owner_inv" type="object" class="oe_stat_button"
+                                icon="fa-pencil-square-o">
+                            <field name="owner_count" widget="statinfo" string="Owner Con"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <label for="name" string="Contract Number"/>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <!--                    <group>-->
+                    <group>
+                        <group name="partner_details">
+                            <field name="partner_id" widget="res_partner_many2one"
+                                   context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}"
+                                   options="{&quot;always_reload&quot;: True}"/>
+
+                        </group>
+                        <group>
+                            <label for="date_from" string="Project Date"/>
+                            <div>
+                                <field name="date_from" placeholder="From" class="oe_inline"
+                                       attrs="{'readonly':[('state','!=','draft')]}"/>
+                                -
+                                <field name="date_to" placeholder="To" class="oe_inline"
+                                       attrs="{'readonly':[('state','!=','draft')]}"
+                                       nolabel="1"/>
+                            </div>
+                            <field name="project_name" string="Project Name"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date_order" />
+                            <!--                            <field name="validity_date"/>-->
+                        </group>
+                    </group>
+
+                    <field name="note"/>
+
+                    <field name="order_line">
+                        <tree editable="bottom">
+                            <field name="sequence_number" />
+                            <field name="product_id" />
+                            <field name="product_uom" />
+                            <field name="price_unit"
+                                   invisible="1"/>
+                            <field name="product_uom_qty"/>
+                            <field name="price_unit"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <field name="price_subtotal" />
+                            <field name="company_id" invisible="1"/>
+                        </tree>
+                    </field>
+                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                        <field name="const_type" invisible="1"/>
+                        <field name="discount_method" invisible="1"/>
+                        <field name="discount_type" invisible="1"/>
+
+
+                        <field name="total_amount_before_discount_amt" widget="monetary"
+                               options="{'currency_field': 'currency_id'}"
+                               attrs="{'invisible': [('const_type','=','normal')]}"
+                               colspan="2"/>
+                        <label for="discount_amount" attrs="{'invisible': [('const_type','=','normal')]}"
+                               string="Discounts"/>
+                        <div>
+                            <field name="discount_amount" class="oe_inline"
+                                   attrs="{'invisible': [('const_type','=','normal')]}"/>
+                        </div>
+
+                        <field name="tax_totals" widget="account-tax-totals-field" colspan="2"
+                               nolabel="1"/>
+                        <!--                        <field name="amount_total" widget="monetary"-->
+                        <!--                               options="{'currency_field': 'currency_id'}"-->
+                        <!--                               attrs="{'invisible': [('const_type','=','normal')]}"-->
+                        <!--                               colspan="2"/>-->
+                    </group>
+
+
+                    <!--                    <footer>-->
+                    <!--                        <group class="oe_subtotal_footer">-->
+                    <!--                            <group>-->
+                    <!--                                <field name="amount_untaxed"/>-->
+                    <!--                            </group>-->
+                    <!--                            <group>-->
+                    <!--                                <field name="amount_total"/>-->
+                    <!--                            </group>-->
+                    <!--                        </group>-->
+                    <!--                    </footer>-->
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Actions -->
+    <record id="sale.action_orders_to_invoice" model="ir.actions.act_window">
+        <field name="name">Orders to Invoice</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form,calendar,graph,pivot</field>
+        <field name="domain">[('invoice_status','=','to invoice'),('const_type', '!=', 'const')]</field>
+    </record>
+
+    <record id="sale.action_orders_upselling" model="ir.actions.act_window">
+        <field name="name">Upselling Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form,calendar,graph,pivot</field>
+        <field name="domain">[('invoice_status','=','upselling'),('const_type', '!=', 'const')]</field>
+    </record>
+
+    <record id="sale.action_quotations" model="ir.actions.act_window">
+        <field name="name">Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+        <field name="domain">[('const_type', '!=', 'const')]</field>
+    </record>
+
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="name">Sales Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),('const_type', '!=', 'const')]</field>
+    </record>
+
+    <record id="action_construction_orders" model="ir.actions.act_window">
+        <field name="name">Construction Orders</field>
+        <field name="res_model">sale.order</field>
+        <!--        <field name="view_mode">tree,form</field>-->
+        <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('sale_const_view_order_tree__')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('sale_const_view_order_form1__')})]"/>
+        <!--        <field name="view_ids"-->
+        <!--               eval="[(0, 0, {'view_mode': 'tree', 'view_id': ref('sale_const_view_order_tree__')}), (0, 0, {'view_mode': 'form', 'view_id': ref('sale_const_view_order_form1__')})]"/>-->
+
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="context">{'default_const_type': 'const'}</field>
+        <field name="domain">[('const_type', '=', 'const')]</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem action="action_construction_orders"
+              id="action_construction_orders_menu"
+              sequence="151"
+              groups="construction.group_construction_user"/>
+</odoo>
