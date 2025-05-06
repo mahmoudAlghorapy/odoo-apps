@@ -311,7 +311,7 @@
 
                     <field name="order_line">
                         <tree editable="bottom">
-                            <field name="sequence_number" />
+<!--                            <field name="sequence_number" />-->
                             <field name="product_id" />
                             <field name="product_uom" />
                             <field name="price_unit"
@@ -333,12 +333,12 @@
                                options="{'currency_field': 'currency_id'}"
                                attrs="{'invisible': [('const_type','=','normal')]}"
                                colspan="2"/>
-                        <label for="discount_amount" attrs="{'invisible': [('const_type','=','normal')]}"
-                               string="Discounts"/>
-                        <div>
-                            <field name="discount_amount" class="oe_inline"
-                                   attrs="{'invisible': [('const_type','=','normal')]}"/>
-                        </div>
+<!--                        <label for="discount_amount" attrs="{'invisible': [('const_type','=','normal')]}"-->
+<!--                               string="Discounts"/>-->
+<!--                        <div>-->
+<!--                            <field name="discount_amount" class="oe_inline"-->
+<!--                                   attrs="{'invisible': [('const_type','=','normal')]}"/>-->
+<!--                        </div>-->
 
                         <field name="tax_totals" widget="account-tax-totals-field" colspan="2"
                                nolabel="1"/>

@@ -8,7 +8,7 @@
     Client Extract and Contractor Extract
 
     """,
-    'depends': ['account', 'sale','sale_management','order_line_sequences__','bi_sale_purchase_discount_with_tax__'],
+    'depends': ['account', 'sale','sale_management'],
     'data': [
         'security/ir.model.access.csv',
         'security/security.xml',
