@@ -505,8 +505,8 @@ class SaleOrder(models.Model):
             'res_model': 'account.move',
             'view_mode': 'tree,form',
             'views': [
-                (self.env.ref('construction.invoice_construction_view_tree').id, 'tree'),
-                (self.env.ref('construction.invoice_construction_view_form').id, 'form')
+                (self.env.ref('contract_owner_construction.invoice_construction_view_tree').id, 'tree'),
+                (self.env.ref('contract_owner_construction.invoice_construction_view_form').id, 'form')
             ],
             'domain': [('sale_order_id', '=', self.id), ('const_type', '=', 'to_sub_contractor')],
             'context': dict(self._context, default_sale_order_id=self.id,
@@ -535,8 +535,8 @@ class SaleOrder(models.Model):
             'res_model': 'account.move',
             'view_mode': 'tree,form',
             'views': [
-                (self.env.ref('construction.invoice_construction_view_tree').id, 'tree'),
-                (self.env.ref('construction.invoice_construction_view_form').id, 'form')
+                (self.env.ref('contract_owner_construction.invoice_construction_view_tree').id, 'tree'),
+                (self.env.ref('contract_owner_construction.invoice_construction_view_form').id, 'form')
             ],
             'context': dict(self._context, default_sale_order_id=self.id,
                             default_partner_id=self.partner_id.id,
