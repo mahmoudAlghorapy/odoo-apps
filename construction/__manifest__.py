@@ -3,7 +3,7 @@
     'version': '16.0',
     'category': 'base',
     'author': ' Mahmoud Fathi',
-    'price': '100',
+    'price': 100,
     'summary': """
     Client Extract and Contractor Extract
 
