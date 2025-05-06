@@ -8,6 +8,26 @@
     Client Extract and Contractor Extract
 
     """,
+'description': """
+Construction Contract Management
+===============================
+
+This module provides a complete solution for managing construction contracts, subcontractor invoices, and owner invoices with advanced progress tracking.
+
+Key Features:
+-------------
+- Manage construction contracts with start/end dates and project details
+- Track subcontractor invoices with sequence numbers
+- Generate owner invoices with progress percentages
+- Automatic calculation of work quantities and amounts
+- Supervision invoice generation
+- Deduction management system
+- Insurance percentage calculations
+- Comprehensive reporting on contract progress
+- Integration with Odoo Accounting and Sales modules
+
+The module is ideal for construction companies, contractors, and project managers who need to efficiently track and manage their construction contracts and related financial transactions.
+""",
     'depends': ['account', 'sale','sale_management'],
     'data': [
         'security/ir.model.access.csv',
