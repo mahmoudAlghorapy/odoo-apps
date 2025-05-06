@@ -8,30 +8,25 @@
     'license': 'LGPL-3',  # Required license key
     'summary': 'Comprehensive Construction Contract and Invoice Management System',
     'description': """
-        <div class="oe_row">
-            <h2>Construction Contract Management</h2>
-            <p>Streamline construction projects with advanced contract, invoice, and progress tracking.</p>
-            
-            <h3>Key Features:</h3>
-            <ul class="oe_spaced">
-                <li>🏗️ Manage subcontractor and owner invoices</li>
-                <li>📅 Track project timelines (date ranges)</li>
-                <li>📊 Automatic progress percentage calculations</li>
-                <li>💰 Supervision invoice generation</li>
-                <li>🧾 Deduction management system</li>
-                <li>🛡️ Insurance withholding calculations</li>
-                <li>🔢 Sequential invoice numbering</li>
-                <li>📈 Integrated with Odoo Sales & Accounting</li>
-            </ul>
-            
-            <div class="oe_demo oe_screenshot">
-                <img src="screenshot1.png" alt="Construction Module Screenshot">
-            </div>
-            
-            <h3>Support</h3>
-            <p>Contact <a href="mailto:support@example.com">support@example.com</a> for assistance.</p>
-        </div>
-    """,
+Construction Contract Management
+===============================
+
+This module provides a complete solution for managing construction contracts, subcontractor invoices, and owner invoices with advanced progress tracking.
+
+Key Features:
+-------------
+- Manage construction contracts with start/end dates and project details
+- Track subcontractor invoices with sequence numbers
+- Generate owner invoices with progress percentages
+- Automatic calculation of work quantities and amounts
+- Supervision invoice generation
+- Deduction management system
+- Insurance percentage calculations
+- Comprehensive reporting on contract progress
+- Integration with Odoo Accounting and Sales modules
+
+The module is ideal for construction companies, contractors, and project managers who need to efficiently track and manage their construction contracts and related financial transactions.
+""",
     'depends': ['account', 'sale','sale_management'],
     'data': [
         'security/ir.model.access.csv',
