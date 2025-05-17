@@ -1,0 +1,183 @@
+<odoo>
+    <record id="action_report_performa_history_html" model="ir.actions.report">
+        <field name="name">Daily Sales Invoices</field>
+        <field name="model">daily.journal.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">daily_customer_invoices.performa_history_report_template</field>
+        <field name="report_file">daily_customer_invoices.performa_history_report_template</field>
+    </record>
+
+    <template id="template_item_price_history_header">
+        <h4 class="mt0" style="text-align: center; color:#518db8;">Daily Sales Invoices</h4>
+        <h6 class="mt0" style="text-align: center;">Date From:
+            <span style="padding:15px" t-esc="docs.date_from or '-'"/>
+            Date To:
+            <span style="padding:15px" t-esc="docs.date_to or '-'"/>
+        </h6>
+        <br/>
+        <h6 class="mt0" style="text-align: center;">Journal:
+            <span style="padding:15px" t-esc="docs.journal_id.name"/>
+        </h6>
+    </template>
+    <template id="item_price_history_summary">
+        <t class="page">
+            <br/>
+            <br/>
+            <table style="border: 1px solid black;" width="100%" class="text-center">
+                <tr style="background-color:#64D0DA;">
+                    <th style="border: 1px solid black;" class="text-center">Customer invoice</th>
+                    <th style="border: 1px solid black;" class="text-center">Invoice Number</th>
+                    <th style="border: 1px solid black;" class="text-center">Amount</th>
+                    <th style="border: 1px solid black;" class="text-center">Amount Due</th>
+                </tr>
+
+                <!-- Invoice lines -->
+                <tr t-foreach="values['invoices']" t-as="invoice">
+                    <td style="border: 1px solid black;">
+                        <span t-esc="invoice['partner_id']"/>
+                    </td>
+                    <td style="border: 1px solid black;">
+                        <span t-esc="invoice['invoice_number']"/>
+                    </td>
+                    <td style="border: 1px solid black;">
+                        <span t-esc="invoice['total_amount']"/>
+                    </td>
+                    <td style="border: 1px solid black;">
+                        <span t-esc="invoice['amount_residual']"/>
+                    </td>
+                </tr>
+
+                <!-- Invoice totals -->
+                <tr>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1">Total Customer invoices</td>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1"></td>
+                    <td style="border: 1px solid black; font-weight: bold;">
+                        <span t-esc="values['totals']['total_invoiced_amount']"/>
+                    </td>
+                    <td style="border: 1px solid black; font-weight: bold;">
+                        <span t-esc="values['totals']['total_invoiced_residual']"/>
+                    </td>
+                </tr>
+
+                <!-- Credit note lines -->
+                <tr t-foreach="values['credits']" t-as="credit">
+                    <td style="border: 1px solid black;">
+                        <span t-esc="credit['partner_id']"/>
+                    </td>
+                    <td style="border: 1px solid black;">
+                        <span t-esc="credit['invoice_number']"/>
+                    </td>
+                    <td style="border: 1px solid black;">
+                        <span t-esc="credit['total_amount']"/>
+                    </td>
+                    <td style="border: 1px solid black;">
+                        <span t-esc="credit['amount_residual']"/>
+                    </td>
+                </tr>
+
+                <!-- Credit note totals -->
+                <tr>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1">Total Credit Note
+                    </td>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1">
+                    </td>
+                    <td style="border: 1px solid black; font-weight: bold;">
+                        <span t-esc="values['totals']['total_credit_amount']"/>
+                    </td>
+                    <td style="border: 1px solid black; font-weight: bold;">
+                        <span t-esc="values['totals']['total_credit_residual']"/>
+                    </td>
+                </tr>
+
+                <!-- Net amount -->
+                <tr>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1"></td>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1"></td>
+                    <td style="border: 1px solid black; font-weight: bold;" colspan="1">NET</td>
+                    <td style="border: 1px solid black; font-weight: bold;">
+                        <span t-esc="values['totals']['net_amount']"/>
+                    </td>
+                </tr>
+
+                <!-- Payment collection -->
+                <tr>
+                    <td  style="border: 1px solid black; font-weight: bold;" colspan="1">Payment
+                        Collection
+                    </td>
+                    <td  style="border: 1px solid black; font-weight: bold;" colspan="1">
+                    </td>
+                    <td  style="border: 1px solid black; font-weight: bold;" colspan="1">
+                    </td>
+                    <td style="border: 1px solid black; font-weight: bold;">
+                        <span t-esc="values['totals']['payment_collection']"/>
+                    </td>
+                </tr>
+            </table>
+        </t>
+    </template>
+
+    <template id="platino_layout">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <div class="article o_report_layout_standard" t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+    </template>
+    <template id="platino_footer_layout">
+        <div class="footer">
+            <table width="100%" style="font-family:Droid Arabic Kufi; font-size:15px;" DIR="RTL">
+                <tr>
+                    <th>
+                        <strong style="font-size:12px;">Printing Date:</strong>
+                        <span style="font-size:12px;"
+                              t-esc="context_timestamp(datetime.datetime.now()).date().strftime('%Y-%m-%d %H:%M')"/>
+
+                        <strong style="font-size:12px; margin-left: 30px;">Printed by:</strong>
+                        <span style="font-size:12px;" t-esc="docs.env.user.name"/>
+                    </th>
+
+
+                </tr>
+            </table>
+        </div>
+    </template>
+    <template id="performa_history_report_template">
+        <t t-call="web.html_container">
+            <t t-call="daily_customer_invoices.platino_layout">
+
+                <t t-if="not company">
+                    <t t-if="company_id">
+                        <t t-set="company" t-value="company_id"/>
+                    </t>
+                    <t t-elif="o and 'company_id' in o">
+                        <t t-set="company" t-value="o.company_id.sudo()"/>
+                    </t>
+                    <t t-else="else">
+                        <t t-set="company" t-value="res_company"/>
+                    </t>
+                </t>
+
+                <t t-call="daily_customer_invoices.platino_footer_layout"/>
+                <t t-call="daily_customer_invoices.template_item_price_history_header"/>
+
+                <t t-call="daily_customer_invoices.item_price_history_summary"/>
+
+            </t>
+        </t>
+    </template>
+</odoo>
