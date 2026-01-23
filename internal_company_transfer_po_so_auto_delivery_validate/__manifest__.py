@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': "Purchase Template",
+    'name': "Internal transfer companies",
     'version' : '19.0.1.0',
 	'license' : 'OPL-1',
 	'author': 'Mahmoud Fathi',
@@ -10,7 +10,14 @@
     'sequence': 1,
     'description': """
 	By creating custom quotation templates, you will save a lot of time.
-	Indeed, with the use of templates, you will be able to send complete quotations at a fast pace
+	Indeed, with the use of templates, you will be able to send complete quotations at a fast pace,
+	after that if you select push to internal companies in template the selector vendor_id will be the  company that will create po and  so orders to it and sub vendor will create sale order to it and  
+	all will created when confirm the original po ,
+	 if we move to last created so in the third company we can change 
+	 quantity in all receipt and delivery if i select only vendor in template will create only so 
+	 in the second company if select the third will create so and po in second company and so in third  
+	 we can change delivered quantity in any picking and if we validate in any one all will validate and create 
+	  bill and invoice for suatable orders if quantity negative will create returned bill or invoice  
     """,
     'price': 150,
 
